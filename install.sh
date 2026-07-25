@@ -25,6 +25,17 @@ fi
 
 echo ""
 
+# Input interaktif API key
+printf "Masukkan API key 9router kamu: "
+read -r API_KEY
+
+if [ -z "$API_KEY" ]; then
+  echo "[ERROR] API key tidak boleh kosong. Installer dibatalkan."
+  exit 1
+fi
+
+echo ""
+
 # Tulis ke setiap RC file
 for RC_FILE in $RC_FILES; do
   echo "Menulis ke $RC_FILE ..."
@@ -53,6 +64,18 @@ for RC_FILE in $RC_FILES; do
     fi
     printf "export OPENCODE_9ROUTER_BASE_URL=%s\n" "$BASE_URL" >> "$RC_FILE"
     echo "  [OK]   OPENCODE_9ROUTER_BASE_URL=$BASE_URL"
+  fi
+
+  # Cek dan tulis OPENCODE_9ROUTER_API_KEY
+  if grep -q "OPENCODE_9ROUTER_API_KEY" "$RC_FILE" 2>/dev/null; then
+    echo "  [SKIP] OPENCODE_9ROUTER_API_KEY sudah ada di $RC_FILE"
+  else
+    if [ "$WROTE_ANYTHING" = "0" ]; then
+      printf "\n# opencode-general-agent\n" >> "$RC_FILE"
+      WROTE_ANYTHING=1
+    fi
+    printf "export OPENCODE_9ROUTER_API_KEY=%s\n" "$API_KEY" >> "$RC_FILE"
+    echo "  [OK]   OPENCODE_9ROUTER_API_KEY=***"
   fi
 
   echo ""

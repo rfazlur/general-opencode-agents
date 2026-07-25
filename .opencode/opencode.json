@@ -5,7 +5,8 @@
       "name": "9router",
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "{env:OPENCODE_9ROUTER_BASE_URL}"
+        "baseURL": "{env:OPENCODE_9ROUTER_BASE_URL}",
+        "apiKey": "{env:OPENCODE_9ROUTER_API_KEY}"
       },
       "models": {
         "combo-model-opus": { "name": "combo-model-opus" },
