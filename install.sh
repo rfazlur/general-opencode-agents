@@ -36,6 +36,30 @@ fi
 
 echo ""
 
+# Cek konflik global opencode config
+GLOBAL_OPENCODE_DIR="$HOME/.config/opencode"
+CONFLICT_FILE=""
+for FNAME in opencode.jsonc opencode.json; do
+  if [ -f "$GLOBAL_OPENCODE_DIR/$FNAME" ]; then
+    CONFLICT_FILE="$GLOBAL_OPENCODE_DIR/$FNAME"
+    break
+  fi
+done
+
+if [ -n "$CONFLICT_FILE" ]; then
+  echo "[PERINGATAN] Ditemukan file config global opencode:"
+  echo "  $CONFLICT_FILE"
+  echo ""
+  echo "File ini akan di-merge dengan config 9router dan bisa menyebabkan"
+  echo "koneksi tidak mengarah ke 9router (terutama jika ada 'provider' atau"
+  echo "'model' yang hardcoded di dalamnya)."
+  echo ""
+  mv "$CONFLICT_FILE" "${CONFLICT_FILE}.bak"
+  echo "[OK] File dibackup ke: ${CONFLICT_FILE}.bak"
+  echo "     Untuk restore: mv \"${CONFLICT_FILE}.bak\" \"$CONFLICT_FILE\""
+  echo ""
+fi
+
 # Tulis ke setiap RC file
 for RC_FILE in $RC_FILES; do
   echo "Menulis ke $RC_FILE ..."

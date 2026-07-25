@@ -15,9 +15,20 @@ cd ~/general-opencode-agents
 
 Script akan mendeteksi shell kamu (zsh/bash), meminta baseURL server 9router secara interaktif, lalu menulis config ke `~/.zshrc` atau `~/.bashrc` secara otomatis. Aman dijalankan berkali-kali — tidak akan duplikasi entry yang sudah ada.
 
+Jika ditemukan file `~/.config/opencode/opencode.jsonc` atau `opencode.json` yang sudah ada, installer otomatis mebackup file tersebut ke `.bak` agar tidak konflik dengan config 9router. File backup bisa di-restore kapan saja.
+
 ```
 # Contoh output installer:
 Masukkan baseURL server 9router kamu (contoh: http://100.97.237.10:20128/v1): http://xxx.xxx.x.x:20128/v1
+
+[PERINGATAN] Ditemukan file config global opencode:
+  /Users/kamu/.config/opencode/opencode.jsonc
+
+File ini akan di-merge dengan config 9router dan bisa menyebabkan
+koneksi tidak mengarah ke 9router...
+
+[OK] File dibackup ke: /Users/kamu/.config/opencode/opencode.jsonc.bak
+     Untuk restore: mv "...opencode.jsonc.bak" "...opencode.jsonc"
 
 Menulis ke /Users/kamu/.zshrc ...
   [OK]   OPENCODE_CONFIG_DIR=/path/to/repo/.opencode
@@ -26,6 +37,11 @@ Menulis ke /Users/kamu/.zshrc ...
 Selesai. Jalankan perintah berikut untuk mengaktifkan perubahan:
 
   source ~/.zshrc
+```
+
+Untuk switch kembali ke config lokal lama:
+```bash
+mv ~/.config/opencode/opencode.jsonc.bak ~/.config/opencode/opencode.jsonc
 ```
 
 **Update agent di kemudian hari:**
