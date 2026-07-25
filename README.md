@@ -6,10 +6,10 @@ Konfigurasi multi-agent yang bisa dipakai untuk project apa pun — coding, kont
 
 ```bash
 # 1. Clone repo ini ke lokasi manapun di mesin kamu
-git clone <repo-url> ~/opencode-agents
+git clone <repo-url> ~/general-opencode-agents
 
 # 2. Jalankan installer
-cd ~/opencode-agents
+cd ~/general-opencode-agents
 ./install.sh
 ```
 
@@ -30,7 +30,7 @@ Selesai. Jalankan perintah berikut untuk mengaktifkan perubahan:
 
 **Update agent di kemudian hari:**
 ```bash
-git -C ~/opencode-agents pull
+git -C ~/general-opencode-agents pull
 ```
 
 ## Cara pakai
