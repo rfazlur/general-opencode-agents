@@ -1,6 +1,7 @@
 #!/bin/bash
 
-REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_PATH="$(readlink -f "$0" 2>/dev/null || realpath "$0" 2>/dev/null || echo "$0")"
+REPO_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
 AGENT_SRC_DIR="$REPO_DIR/.opencode/agent"
 
 GLOBAL_OPENCODE_DIR="$HOME/.config/opencode"

@@ -1,0 +1,29 @@
+{
+  "name": "@rfazlur/fdnqa",
+  "version": "1.0.1",
+  "description": "Multi-agent OpenCode config for coding, content, research, and QA workflows",
+  "bin": {
+    "fdnqa": "./bin/install.js"
+  },
+  "files": [
+    ".opencode/agent",
+    ".opencode/opencode.json",
+    "docs",
+    "bin",
+    "install.sh",
+    "uninstall.sh"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "opencode",
+    "agents",
+    "ai",
+    "multi-agent"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}
