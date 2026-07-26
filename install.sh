@@ -1,5 +1,7 @@
 #!/bin/sh
 
+SHEET_CSV_URL="https://docs.google.com/spreadsheets/d/1QxaBo3MF6fYAJoR-9Pv3XDMfHGK2_8HDIaN65kERLvg/export?format=csv&gid=0"
+
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 AGENT_SRC_DIR="$REPO_DIR/.opencode/agent"
 PROVIDER_SRC="$REPO_DIR/.opencode/opencode.json"
@@ -12,6 +14,17 @@ echo "opencode-general-agent installer"
 echo "================================="
 echo ""
 
+# Cek dependency
+if ! command -v curl >/dev/null 2>&1; then
+  echo "[ERROR] curl tidak ditemukan. Install curl terlebih dahulu."
+  exit 1
+fi
+
+if ! command -v openssl >/dev/null 2>&1; then
+  echo "[ERROR] openssl tidak ditemukan. Install openssl terlebih dahulu."
+  exit 1
+fi
+
 # Deteksi RC file berdasarkan shell aktif
 case "$SHELL" in
   */zsh)  RC_FILES="$HOME/.zshrc" ;;
@@ -19,32 +32,65 @@ case "$SHELL" in
   *)      RC_FILES="$HOME/.zshrc $HOME/.bashrc" ;;
 esac
 
-# Input interaktif baseURL
-printf "Masukkan baseURL server 9router kamu (contoh: http://100.97.237.10:20128/v1): "
-read -r BASE_URL
+# Input email
+printf "Masukkan email kamu: "
+read -r USER_EMAIL
 
-if [ -z "$BASE_URL" ]; then
-  echo "[ERROR] baseURL tidak boleh kosong. Installer dibatalkan."
+if [ -z "$USER_EMAIL" ]; then
+  echo "[ERROR] Email tidak boleh kosong. Installer dibatalkan."
   exit 1
 fi
 
 echo ""
+echo "Mengambil data dari database..."
 
-# Input interaktif API key
-printf "Masukkan API key 9router kamu: "
-read -r API_KEY
+# Fetch CSV dari Google Sheets
+CSV_DATA=$(curl -sL "$SHEET_CSV_URL" 2>/dev/null)
 
-if [ -z "$API_KEY" ]; then
-  echo "[ERROR] API key tidak boleh kosong. Installer dibatalkan."
+if [ -z "$CSV_DATA" ]; then
+  echo "[ERROR] Gagal mengambil data. Periksa koneksi internet."
   exit 1
 fi
 
+# Lookup row by email (kolom 2 = email)
+ROW=$(echo "$CSV_DATA" | awk -F',' -v email="$USER_EMAIL" 'NR>1 && $2 == email {print}')
+
+if [ -z "$ROW" ]; then
+  echo "[ERROR] Email '$USER_EMAIL' tidak ditemukan. Hubungi admin untuk didaftarkan."
+  exit 1
+fi
+
+BASE_URL=$(echo "$ROW" | cut -d',' -f1)
+APIKEY_CIPHER=$(echo "$ROW" | cut -d',' -f3 | tr -d '\r')
+
+echo "  [OK] Data ditemukan untuk $USER_EMAIL"
+echo ""
+
+# Input passphrase untuk decrypt apikey
+printf "Masukkan shared passphrase: "
+read -rs PASSPHRASE
+echo ""
+
+if [ -z "$PASSPHRASE" ]; then
+  echo "[ERROR] Passphrase tidak boleh kosong. Installer dibatalkan."
+  exit 1
+fi
+
+# Decrypt apikey
+API_KEY=$(printf '%s' "$APIKEY_CIPHER" | openssl enc -aes-256-cbc -pbkdf2 -a -d -pass pass:"$PASSPHRASE" 2>/dev/null)
+
+if [ -z "$API_KEY" ]; then
+  echo "[ERROR] Passphrase salah atau data rusak. Installer dibatalkan."
+  exit 1
+fi
+
+echo "  [OK] API key berhasil didecrypt"
 echo ""
 
 # Buat direktori global jika belum ada
 mkdir -p "$GLOBAL_AGENTS_DIR"
 
-# Copy semua agent .md files ke ~/.config/opencode/agents/ (rekursif, pertahankan struktur)
+# Copy semua agent .md files ke ~/.config/opencode/agents/
 echo "Menyalin agent files ke $GLOBAL_AGENTS_DIR ..."
 find "$AGENT_SRC_DIR" -name "*.md" | while read -r SRC_FILE; do
   REL_PATH="${SRC_FILE#$AGENT_SRC_DIR/}"
@@ -93,9 +139,9 @@ for RC_FILE in $RC_FILES; do
 
   WROTE_ANYTHING=0
 
-  # Cek dan tulis OPENCODE_9ROUTER_BASE_URL
   if grep -q "OPENCODE_9ROUTER_BASE_URL" "$RC_FILE" 2>/dev/null; then
-    echo "  [SKIP] OPENCODE_9ROUTER_BASE_URL sudah ada di $RC_FILE"
+    sed -i.bak "s|export OPENCODE_9ROUTER_BASE_URL=.*|export OPENCODE_9ROUTER_BASE_URL=$BASE_URL|" "$RC_FILE"
+    echo "  [UPDATE] OPENCODE_9ROUTER_BASE_URL diperbarui"
   else
     if [ "$WROTE_ANYTHING" = "0" ]; then
       printf "\n# opencode-general-agent\n" >> "$RC_FILE"
@@ -105,9 +151,9 @@ for RC_FILE in $RC_FILES; do
     echo "  [OK]   OPENCODE_9ROUTER_BASE_URL=$BASE_URL"
   fi
 
-  # Cek dan tulis OPENCODE_9ROUTER_API_KEY
   if grep -q "OPENCODE_9ROUTER_API_KEY" "$RC_FILE" 2>/dev/null; then
-    echo "  [SKIP] OPENCODE_9ROUTER_API_KEY sudah ada di $RC_FILE"
+    sed -i.bak "s|export OPENCODE_9ROUTER_API_KEY=.*|export OPENCODE_9ROUTER_API_KEY=$API_KEY|" "$RC_FILE"
+    echo "  [UPDATE] OPENCODE_9ROUTER_API_KEY diperbarui"
   else
     if [ "$WROTE_ANYTHING" = "0" ]; then
       printf "\n# opencode-general-agent\n" >> "$RC_FILE"

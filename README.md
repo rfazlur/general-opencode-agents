@@ -13,31 +13,48 @@ cd ~/general-opencode-agents
 ./install.sh
 ```
 
-Script akan mendeteksi shell kamu (zsh/bash), meminta baseURL server 9router secara interaktif, lalu menulis config ke `~/.zshrc` atau `~/.bashrc` secara otomatis. Aman dijalankan berkali-kali — tidak akan duplikasi entry yang sudah ada.
-
-Jika ditemukan file `~/.config/opencode/opencode.jsonc` atau `opencode.json` yang sudah ada, installer otomatis mebackup file tersebut ke `.bak` agar tidak konflik dengan config 9router. File backup bisa di-restore kapan saja.
+Installer akan meminta **email** dan **shared passphrase** (tanyakan ke admin). Baseurl dan API key otomatis diambil dari database dan didecrypt — tidak perlu input manual.
 
 ```
 # Contoh output installer:
-Masukkan baseURL server 9router kamu (contoh: http://100.97.237.10:20128/v1): http://xxx.xxx.x.x:20128/v1
+Masukkan email kamu: nama@perusahaan.com
 
-[PERINGATAN] Ditemukan file config global opencode:
-  /Users/kamu/.config/opencode/opencode.jsonc
+Mengambil data dari database...
+  [OK] Data ditemukan untuk nama@perusahaan.com
 
-File ini akan di-merge dengan config 9router dan bisa menyebabkan
-koneksi tidak mengarah ke 9router...
-
-[OK] File dibackup ke: /Users/kamu/.config/opencode/opencode.jsonc.bak
-     Untuk restore: mv "...opencode.jsonc.bak" "...opencode.jsonc"
-
-Menulis ke /Users/kamu/.zshrc ...
-  [OK]   OPENCODE_CONFIG_DIR=/path/to/repo/.opencode
-  [OK]   OPENCODE_9ROUTER_BASE_URL=http://xxx.xxx.x.x:20128/v1
+Masukkan shared passphrase: ****
+  [OK] API key berhasil didecrypt
 
 Selesai. Jalankan perintah berikut untuk mengaktifkan perubahan:
 
   source ~/.zshrc
 ```
+
+Jika ditemukan file `~/.config/opencode/opencode.jsonc` yang sudah ada, installer otomatis mebackup file tersebut ke `.bak`.
+
+## Setup User Baru (untuk Admin)
+
+Sebelum anggota tim bisa install, admin perlu mendaftarkan email mereka di database (Google Sheets).
+
+**Langkah 1: Encrypt apikey**
+
+```bash
+./scripts/encrypt-apikey.sh "sk-raw-apikey-disini"
+# Masukkan shared passphrase saat diminta
+# Output: ciphertext — copy hasilnya
+```
+
+**Langkah 2: Tambah row di Google Sheets**
+
+Buka sheet database, tambah baris baru dengan kolom:
+
+| baseurl | email | apikey |
+|---------|-------|--------|
+| `http://IP:PORT/v1` | `nama@perusahaan.com` | `(ciphertext dari langkah 1)` |
+
+**Langkah 3: Share passphrase ke anggota tim**
+
+Kirim shared passphrase via channel internal (bukan di repo, bukan di sheet).
 
 Untuk switch kembali ke config lokal lama:
 ```bash
