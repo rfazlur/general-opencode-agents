@@ -1,7 +1,7 @@
 ---
 description: Core role — menyusun rencana kerja langkah demi langkah berdasarkan brief project, terlepas dari jenis project-nya.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.3
 permission:
   read: allow

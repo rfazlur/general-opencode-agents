@@ -1,7 +1,7 @@
 ---
 description: Content track — mengumpulkan bahan/referensi/fakta pendukung sebelum konten ditulis.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.3
 permission:
   read: allow

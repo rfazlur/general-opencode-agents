@@ -1,7 +1,7 @@
 ---
 description: Content track — menulis draft konten berdasarkan bahan riset dan brief (platform, tone, panjang).
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-haiku
 temperature: 0.6
 permission:
   read: allow

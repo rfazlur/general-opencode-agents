@@ -1,7 +1,7 @@
 ---
 description: QA track — menulis test case manual dari hasil ekstraksi requirements prd-analyzer, sesuai format dan scope yang ditentukan brief.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.3
 tools:
   read: true

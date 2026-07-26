@@ -1,7 +1,7 @@
 ---
 description: QA Automation (iOS) — menulis automation script berdasarkan requirements dari analyzer, mengikuti framework dan pattern project yang sudah ada atau membangun dari nol.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.2
 permission:
   read: allow

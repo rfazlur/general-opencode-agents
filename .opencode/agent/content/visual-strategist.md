@@ -1,7 +1,7 @@
 ---
 description: Content track — merancang arahan visual (storyboard, deskripsi shot, gaya visual) untuk mendampingi draft konten.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.5
 permission:
   read: allow
