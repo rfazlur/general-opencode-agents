@@ -1,7 +1,7 @@
 ---
 description: Primary orchestrator — menerima brief project, menentukan track (coding/konten/riset/campuran), dan mengoordinasikan seluruh pipeline sampai output final disetujui.
 mode: primary
-model: 9router/combo-model-gemini-pro
+model: 9router/combo-model-opus
 temperature: 0.2
 permission:
   read: allow

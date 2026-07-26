@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 SHEET_CSV_URL="https://docs.google.com/spreadsheets/d/1QxaBo3MF6fYAJoR-9Pv3XDMfHGK2_8HDIaN65kERLvg/export?format=csv&gid=0"
 
@@ -61,7 +61,7 @@ if [ -z "$ROW" ]; then
 fi
 
 BASE_URL=$(echo "$ROW" | cut -d',' -f1)
-APIKEY_CIPHER=$(echo "$ROW" | cut -d',' -f3 | tr -d '\r')
+APIKEY_CIPHER=$(echo "$ROW" | awk -F',' '{print $3}' | tr -d '\r\n ')
 
 echo "  [OK] Data ditemukan untuk $USER_EMAIL"
 echo ""
@@ -77,12 +77,25 @@ if [ -z "$PASSPHRASE" ]; then
 fi
 
 # Decrypt apikey
-API_KEY=$(printf '%s' "$APIKEY_CIPHER" | openssl enc -aes-256-cbc -pbkdf2 -a -d -pass pass:"$PASSPHRASE" 2>/dev/null)
+OPENSSL_ERR=$(mktemp)
+CIPHER_TMP=$(mktemp)
+printf '%s\n' "$APIKEY_CIPHER" > "$CIPHER_TMP"
+API_KEY=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -pass pass:"$PASSPHRASE" -in "$CIPHER_TMP" 2>"$OPENSSL_ERR")
+
+if [ -z "$API_KEY" ]; then
+  API_KEY=$(openssl enc -aes-256-cbc -a -d -pass pass:"$PASSPHRASE" -in "$CIPHER_TMP" 2>/dev/null)
+fi
 
 if [ -z "$API_KEY" ]; then
   echo "[ERROR] Passphrase salah atau data rusak. Installer dibatalkan."
+  HINT=$(cat "$OPENSSL_ERR" 2>/dev/null)
+  if [ -n "$HINT" ]; then
+    echo "        Hint: $HINT"
+  fi
+  rm -f "$OPENSSL_ERR" "$CIPHER_TMP"
   exit 1
 fi
+rm -f "$OPENSSL_ERR" "$CIPHER_TMP"
 
 echo "  [OK] API key berhasil didecrypt"
 echo ""
