@@ -1,7 +1,7 @@
 ---
 description: Research track — mengumpulkan data dan sumber mentah untuk menjawab pertanyaan riset di brief.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.2
 permission:
   read: allow

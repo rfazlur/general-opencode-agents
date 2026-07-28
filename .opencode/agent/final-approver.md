@@ -1,7 +1,7 @@
 ---
 description: Core role — gate terakhir sebelum output dianggap selesai dan diserahkan ke user. Read-only.
 mode: subagent
-model: 9router/combo-model-opus
+model: 9router/combo-model-sonnet
 temperature: 0.1
 permission:
   read: allow

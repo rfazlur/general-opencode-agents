@@ -1,7 +1,7 @@
 ---
 description: Research track — menyusun laporan akhir yang jelas dan actionable dari hasil analisis, siap dibaca user.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.3
 permission:
   read: allow

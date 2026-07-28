@@ -1,7 +1,7 @@
 ---
 description: PRD track — menulis Product Requirements Document dari nol berdasarkan brief, input user, dan referensi Figma.
 mode: subagent
-model: 9router/combo-model-sonnet
+model: 9router/combo-model-gemini-pro
 temperature: 0.3
 permission:
   read: allow
