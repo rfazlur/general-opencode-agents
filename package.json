@@ -1,6 +1,6 @@
 {
   "name": "@rfazlur/fdnqa",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Multi-agent OpenCode config for coding, content, research, and QA workflows",
   "bin": {
     "fdnqa": "./bin/install.js"
@@ -11,6 +11,7 @@
     "docs",
     "bin",
     "install.sh",
+    "update.sh",
     "uninstall.sh"
   ],
   "engines": {
