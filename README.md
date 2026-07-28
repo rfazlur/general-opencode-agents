@@ -5,12 +5,7 @@ Konfigurasi multi-agent yang bisa dipakai untuk project apa pun — coding, kont
 ## Instalasi Global (sekali, berlaku di semua project)
 
 ```bash
-# 1. Clone repo ini ke lokasi manapun di mesin kamu
-git clone <repo-url> ~/general-opencode-agents
-
-# 2. Jalankan installer
-cd ~/general-opencode-agents
-./install.sh
+npx @rfazlur/fdnqa
 ```
 
 Installer akan meminta **email** dan **shared passphrase** (tanyakan ke admin). Baseurl dan API key otomatis diambil dari database dan didecrypt — tidak perlu input manual.
@@ -31,6 +26,14 @@ Selesai. Jalankan perintah berikut untuk mengaktifkan perubahan:
 ```
 
 Jika ditemukan file `~/.config/opencode/opencode.jsonc` yang sudah ada, installer otomatis mebackup file tersebut ke `.bak`.
+
+## Commands
+
+| Command | Keterangan |
+|---------|------------|
+| `npx @rfazlur/fdnqa` | Install pertama kali — prompt email + passphrase |
+| `npx @rfazlur/fdnqa update` | Update agent files ke versi terbaru tanpa re-auth |
+| `npx @rfazlur/fdnqa uninstall` | Hapus semua agent files dan env vars |
 
 ## Setup User Baru (untuk Admin)
 
@@ -63,7 +66,7 @@ mv ~/.config/opencode/opencode.jsonc.bak ~/.config/opencode/opencode.jsonc
 
 **Update agent di kemudian hari:**
 ```bash
-git -C ~/general-opencode-agents pull
+npx @rfazlur/fdnqa update
 ```
 
 ## Cara pakai
